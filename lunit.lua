@@ -1,4 +1,3 @@
-
 --[[--------------------------------------------------------------------------
 
     This file is part of lunit 0.5.
@@ -43,6 +42,7 @@ local setmetatable    = setmetatable
 local pcall           = pcall
 local xpcall          = xpcall
 local require         = require
+local loadfile        = loadfile
 
 local string_sub      = string.sub
 local string_gsub     = string.gsub
