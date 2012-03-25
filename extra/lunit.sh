@@ -120,7 +120,7 @@ exec "$interpreter" - "$scriptname" $options "$@" <<EOT
     force( scriptname..".lua" )
     force( scriptname.."-console.lua" )
   end
-  require "lunit"
+  lunit = require "lunit"
   local stats = lunit.main(argv)
   if stats.errors > 0 or stats.failed > 0 then
     os.exit(1)
