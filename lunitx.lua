@@ -13,6 +13,9 @@ atexit(function()
         print(emsg)
         os.exit(1)
     end
+    if lunit.stats.failed > 0 then
+      os.exit(1)
+    end
 end)
 
 return lunit
