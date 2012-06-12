@@ -1,0 +1,5 @@
+lua-lunitx (0.6.0) stable; urgency=low
+
+  * Initial packaging effort
+
+ -- Ricky Cormier <ricky@last.fm>  Tue, 26 Jul 2011 22:08:05 +0000

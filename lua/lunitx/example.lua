@@ -2,7 +2,7 @@
 lunit = require "lunitx"
 
 
-if _VERSION >= 'Lua 5.2' then 
+if _VERSION >= 'Lua 5.2' then
     _ENV = lunit.module('simple','seeall')
 else
     module( "simple", package.seeall, lunit.testcase )
@@ -17,7 +17,7 @@ function test_failure()
 end
 
 
-if _VERSION >= 'Lua 5.2' then 
+if _VERSION >= 'Lua 5.2' then
     _ENV = lunit.module('enhanced','seeall')
 else
     module( "enhanced", package.seeall, lunit.testcase )

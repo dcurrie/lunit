@@ -17,7 +17,7 @@
     and to permit persons to whom the Software is furnished to do so,
     subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be 
+    The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
@@ -35,15 +35,15 @@ local lunit = require "lunitx"
 
 lunit.console = require "lunit.console"
 
-if _VERSION >= 'Lua 5.2' then 
+if _VERSION >= 'Lua 5.2' then
 
     lunit.selftest = lunit.module("lunit.selftest","seeall")
     _ENV = lunit.selftest
-    
+
 else
 
     module("lunit.selftest", package.seeall)
-    
+
 end
 
 local a_number    = 123
@@ -59,14 +59,14 @@ local ipairs      = ipairs
 
 local module      -- = module
 
-if _VERSION >= 'Lua 5.2' then 
+if _VERSION >= 'Lua 5.2' then
 
     module = function (name, unk) _ENV = lunit.module(name) end
-    
+
 else
 
     module = _G.module
-    
+
 end
 
 
@@ -748,7 +748,7 @@ function test_assert_number()
 end
 
 function test_assert_string()
-  assert_string( a_string ) 
+  assert_string( a_string )
   assert_string( a_string, "A message" )
 
   assert_error( function() assert_string( nil ) end)

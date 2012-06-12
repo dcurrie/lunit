@@ -1,13 +1,13 @@
 local lunit = require "lunitx"
 
-if _VERSION >= 'Lua 5.2' then 
+if _VERSION >= 'Lua 5.2' then
 
     _ENV = lunit.module('up','seeall')
-    
+
 else
 
     module("up", lunit.testcase, package.seeall)
-    
+
 end
 
 function testsuccess()

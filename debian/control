@@ -1,0 +1,12 @@
+Source: lua-lunitx
+Section: unknown
+Priority: extra
+Maintainer: Ricky Cormier <ricky@last.fm>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.7.3
+
+Package: lua-lunitx
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Lunit is a unit testing framework for lua.
+

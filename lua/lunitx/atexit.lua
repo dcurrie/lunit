@@ -3,12 +3,12 @@ local actions = {}
 
 local atexit
 
-if _VERSION >= 'Lua 5.2' then 
+if _VERSION >= 'Lua 5.2' then
 
     atexit = function (fn)
         actions[#actions+1] = setmetatable({}, { __gc = fn })
     end
-    
+
 else
 
     local newproxy = newproxy
@@ -25,7 +25,7 @@ else
     atexit = function (fn)
         actions[#actions+1] = gc(fn)
     end
-    
+
 end
 
 return atexit
