@@ -1021,3 +1021,35 @@ end
 function test3()
   helper()
 end
+
+module( "lunit.selftest.return", lunit.testcase )
+
+local function test_multiple(assert_f, actual)
+  return function()
+    local a,b,c,d = assert_f(actual, 1, 2, 3)
+    assert_equal(actual, a)
+    assert_equal(1, b)
+    assert_equal(2, c)
+    assert_equal(3, d)
+  end
+end
+
+local function test_multiple2(assert_f, expect, actual)
+  return function()
+    local a,b,c,d = assert_f(expect, actual, 1, 2, 3)
+    assert_equal(actual, a)
+    assert_equal(1, b)
+    assert_equal(2, c)
+    assert_equal(3, d)
+  end
+end
+
+test_multiple_true       = test_multiple ( assert_true,      true          )
+test_multiple_false      = test_multiple ( assert_false,     false         )
+test_multiple_assert     = test_multiple ( assert,           true          )
+test_multiple_nil        = test_multiple ( assert_nil,       nil           )
+test_multiple_not_nil    = test_multiple ( assert_not_nil,   1             )
+test_multiple_equal      = test_multiple2( assert_equal,     1, 1          )
+test_multiple_not_equal  = test_multiple2( assert_not_equal, 0, 1          )
+test_multiple_match      = test_multiple2( assert_match,     ".+", "hello" )
+test_multiple_not_match  = test_multiple2( assert_not_match, ".+", ""      )
