@@ -1,4 +1,4 @@
-local atexit = require "lunitx/atexit"
+local atexit = require "lunitx.atexit"
 local lunit = require "lunit"
 
 --for k,v in pairs(debug.getinfo(1,"S")) do print(k,v) end
