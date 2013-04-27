@@ -35,17 +35,6 @@ local lunit = require "lunitx"
 
 lunit.console = require "lunit.console"
 
-if _VERSION >= 'Lua 5.2' then
-
-    lunit.selftest = lunit.module("lunit.selftest","seeall")
-    _ENV = lunit.selftest
-
-else
-
-    module("lunit.selftest", package.seeall)
-
-end
-
 local a_number    = 123
 local a_string    = "A string"
 local a_table     = { }
@@ -57,20 +46,14 @@ local error       = error
 local pairs       = pairs
 local ipairs      = ipairs
 
-local module      -- = module
-
-if _VERSION >= 'Lua 5.2' then
-
-    module = function (name, unk) _ENV = lunit.module(name) end
-
-else
-
-    module = _G.module
-
-end
+local TEST_CASE = lunit.TEST_CASE
 
 
-module( "lunit.selftest.interface", lunit.testcase )
+local _ENV = TEST_CASE "lunit.selftest"
+lunit.selftest = _ENV
+
+
+local _ENV = TEST_CASE "lunit.selftest.interface"
 
 function test()
   local funcnames = {
@@ -84,7 +67,7 @@ function test()
     "assert_userdata", "assert_not_userdata", "assert_pass", "assert_error",
     "assert_error_match", "fail", "clearstats",
     "is_nil", "is_boolean", "is_number", "is_string", "is_table", "is_function",
-    "is_thread", "is_userdata", "module"
+    "is_thread", "is_userdata", "module", "TEST_CASE"
   }
 
   local tablenames = {
@@ -119,10 +102,9 @@ function test()
 end
 
 
-
 -- We must assume that errors thrown by test functions are detected. We use
 -- the stdlib error() function to signal errors instead of fail().
-module( "lunit.selftest.basics", lunit.testcase )
+local _ENV = TEST_CASE "lunit.selftest.basics"
 
 function test_fail()
   local ok, errmsg
@@ -325,7 +307,6 @@ function test_assert_equal()
   end)
 end
 
-
 function test_assert_not_equal()
   assert_pass("assert_not_equal(\"A String\", \"Another String\") doesn't work!", function()
     local a_string = assert_not_equal("A String", "Another String")
@@ -450,7 +431,7 @@ end
 
 
 
-module( "lunit.selftest.is_xyz", lunit.testcase )
+local _ENV = TEST_CASE "lunit.selftest.is_xyz"
 
 function test_is_nil()
   assert_true( is_nil(nil) )
@@ -531,7 +512,7 @@ end
 
 
 
-module( "lunit.selftest.assert_not_xyz", lunit.testcase )
+local _ENV = TEST_CASE "lunit.selftest.assert_not_xyz"
 
 function test_assert_not_nil()
   assert_not_nil( true )
@@ -682,7 +663,7 @@ end
 
 
 
-module( "lunit.selftest.assert_xyz", lunit.testcase )
+local _ENV = TEST_CASE "lunit.selftest.assert_xyz"
 
 function test_assert_nil()
   assert_nil( nil )
@@ -833,7 +814,7 @@ end
 
 
 
-module( "lunit.selftest.match", lunit.testcase )
+local _ENV = TEST_CASE "lunit.selftest.match"
 
 function test_assert_match()
   assert_pass("assert_match(\"^Hello\", \"Hello World\") doesn't work!", function()
@@ -989,8 +970,7 @@ function test_assert_error_match()
 end
 
 
-
-module( "lunit.selftest.setup-teardown", lunit.testcase )
+local _ENV = TEST_CASE "lunit.selftest.setup-teardown"
 
 local setup_called = 0
 local teardown_called = 0
@@ -1022,7 +1002,8 @@ function test3()
   helper()
 end
 
-module( "lunit.selftest.return", lunit.testcase )
+
+local _ENV = TEST_CASE "lunit.selftest.return"
 
 local function test_multiple(assert_f, actual)
   return function()

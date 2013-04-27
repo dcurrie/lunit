@@ -55,12 +55,27 @@ local string_find     = string.find
 local table_concat    = table.concat
 
 local debug_getinfo   = debug.getinfo
+local package         = require "package"
+local setfenv         = setfenv
 
 local _G = _G
 
+local IS_LUA52 = _VERSION >= 'Lua 5.2'
+
 local lunit
 
-if _VERSION >= 'Lua 5.2' then 
+local module = _G.module
+
+local function TEST_CASE(name)
+  if not IS_LUA52 then
+    module(name, package.seeall, lunit.testcase)
+    setfenv(2, _M)
+  else
+    return lunit.module(name, 'seeall')
+  end
+end
+
+if IS_LUA52 then 
 
     lunit = {}
     _ENV = lunit
@@ -72,6 +87,7 @@ else
     
 end
 
+lunit.TEST_CASE = TEST_CASE
 
 local __failure__ = {}    -- Type tag for failed assertions
 
