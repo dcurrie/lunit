@@ -586,6 +586,10 @@ traceback_hide(runtest)
 
 function lunit.run(testpatterns)
   clearstats()
+  if (not getrunner()) then
+    loadrunner("lunit.console")
+  end
+
   report("begin")
   for testcasename in lunit.testcases() do
     -- Run tests in the testcases
