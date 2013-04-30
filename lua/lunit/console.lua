@@ -1,7 +1,7 @@
 
 --[[--------------------------------------------------------------------------
 
-    This file is part of lunit 0.6.
+    This file is part of lunit 0.7.
 
     For Details about lunit look at: http://www.mroth.net/lunit/
 

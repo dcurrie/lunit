@@ -1,3 +1,13 @@
+
+
+Release 0.7:
+
+        Bug fixes and improvements from moteus (Alexey Melnichuk):
+        - Assert functions return all parameters
+        - Add TEST_CASE function for compatibility with Lua 5.1/5.2
+        - Fix default runner not set in lunit.run
+        - Reorganize project tree
+
 Release 0.6:
 
 	Lunit no longer depends on lunit.sh. The script moved to the

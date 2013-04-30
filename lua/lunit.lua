@@ -1,6 +1,6 @@
 --[[--------------------------------------------------------------------------
 
-    This file is part of lunit 0.6.
+    This file is part of lunit 0.7.
 
     For Details about lunit look at: http://www.mroth.net/lunit/
     For Details about lunitx look at: https://github.com/dcurrie/lunit
@@ -711,7 +711,7 @@ function main(argv)
       testpatterns[#testpatterns+1] = arg
     elseif arg == "--help" or arg == "-h" then
         print[[
-lunit 0.6
+lunit 0.7
 Copyright (c) 2004-2010 Michael Roth <mroth@nessie.de>
 Copyright (c) 2011-2012 Doug Currie
 This program comes WITHOUT WARRANTY OF ANY KIND.
