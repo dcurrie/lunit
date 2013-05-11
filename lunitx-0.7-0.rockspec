@@ -1,8 +1,8 @@
 package = "lunitx"
-version = "0.6-0"
+version = "0.7-0"
 source = {
   url = "git://github.com/dcurrie/lunit.git",
-  tag = "0.6.0"
+  tag = "0.7.0"
 }
 description = {
   summary = "Lunitx is a unit testing framework for lua, written in lua.",
