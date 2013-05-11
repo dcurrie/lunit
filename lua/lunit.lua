@@ -90,6 +90,7 @@ end
 lunit.TEST_CASE = TEST_CASE
 
 local __failure__ = {}    -- Type tag for failed assertions
+local __skip__    = {}    -- Type tag for skipped tests
 
 local typenames = { "nil", "boolean", "number", "string", "table", "function", "thread", "userdata" }
 
@@ -104,7 +105,7 @@ do
   end
 
   local function my_traceback(errobj)
-    if is_table(errobj) and errobj.type == __failure__ then
+    if is_table(errobj) and ((errobj.type == __failure__) or (errobj.type == __skip__)) then
       local info = debug_getinfo(5, "Sl")   -- FIXME: Hardcoded integers are bad...
       errobj.where = string_format( "%s:%d", info.short_src, info.currentline)
     else
@@ -182,6 +183,18 @@ local function failure(name, usermsg, defaultmsg, ...)
 end
 traceback_hide( failure )
 
+local function _skip(name, usermsg, defaultmsg, ...)
+  if usermsg then usermsg = tostring(usermsg) end
+  local errobj = {
+    type    = __skip__,
+    name    = name,
+    msg     = string_format(defaultmsg,...),
+    usermsg = usermsg
+  }
+  error(errobj, 0)
+end
+traceback_hide( _skip )
+
 
 local function format_arg(arg)
   local argtype = type(arg)
@@ -251,6 +264,13 @@ function fail(msg)
   failure( "fail", msg, "failure" )
 end
 traceback_hide( fail )
+
+
+function skip(msg)
+  stats.assertions = stats.assertions + 1
+  _skip( "skip", msg, "skip" )
+end
+traceback_hide( skip )
 
 
 function assert(assertion, ...)
@@ -428,6 +448,7 @@ function lunit.clearstats()
     passed      = 0;
     failed      = 0;
     errors      = 0;
+    skipped     = 0;
   }
 end
 
@@ -477,6 +498,9 @@ do
     if errobj.type == __failure__ then
       stats.failed = stats.failed + 1
       report("fail", fullname, errobj.where, errobj.msg, errobj.usermsg)
+    elseif errobj.type == __skip__ then
+      stats.skipped = stats.skipped + 1
+      report("skip", fullname, errobj.where, errobj.msg, errobj.usermsg)
     else
       stats.errors = stats.errors + 1
       report("err", fullname, errobj.msg, errobj.tb)
@@ -509,6 +533,7 @@ do
     -- Import lunit, fail, assert* and is_* function to the module/testcase
     m.lunit = lunit
     m.fail = lunit.fail
+    m.skip = lunit.skip
     for funcname, func in pairs(lunit) do
       if "assert" == string_sub(funcname, 1, 6) or "is_" == string_sub(funcname, 1, 3) then
         m[funcname] = func

@@ -67,7 +67,7 @@ function test()
     "assert_userdata", "assert_not_userdata", "assert_pass", "assert_error",
     "assert_error_match", "fail", "clearstats",
     "is_nil", "is_boolean", "is_number", "is_string", "is_table", "is_function",
-    "is_thread", "is_userdata", "module", "TEST_CASE"
+    "is_thread", "is_userdata", "module", "TEST_CASE", "skip"
   }
 
   local tablenames = {
