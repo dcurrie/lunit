@@ -195,16 +195,54 @@ local function format_arg(arg)
 end
 
 
-local function selected(map, name)
+local selected
+do 
+  local conv = {
+    ["^"] = "%^",
+    ["$"] = "%$",
+    ["("] = "%(",
+    [")"] = "%)",
+    ["%"] = "%%",
+    ["."] = "%.",
+    ["["] = "%[",
+    ["]"] = "%]",
+    ["+"] = "%+",
+    ["-"] = "%-",
+    ["?"] = ".",
+    ["*"] = ".*"
+  }
+
+  local function lunitpat2luapat(str)
+    --return "^" .. string.gsub(str, "%W", conv) .. "$"
+    -- Above was very annoying, if I want to run all the tests having to do with
+    -- RSS, I want to be able to do "-t rss"   not "-t \*rss\*".
+    return string_gsub(str, "%W", conv)
+  end
+
+  local function in_patternmap(map, name)
+    if map[name] == true then
+      return true
+    else
+      for _, pat in ipairs(map) do
+        if string_find(name, pat) then
+          return true
+        end
+      end
+    end
+    return false
+  end
+
+  selected = function (map, name)
     if not map then
-        return true
+      return true
     end
 
     local m = {}
     for k,v in pairs(map) do
-        m[k] = lunitpat2luapat(v)
+      m[k] = lunitpat2luapat(v)
     end
     return in_patternmap(m, name)
+  end
 end
 
 
@@ -447,7 +485,6 @@ do
 end
 
 
-
 local function key_iter(t, k)
     return (next(t,k))
 end
@@ -542,8 +579,6 @@ do
 end
 
 
-
-
 function lunit.runtest(tcname, testname)
   orig_assert( is_string(tcname) )
   orig_assert( is_string(testname) )
@@ -583,7 +618,6 @@ end
 traceback_hide(runtest)
 
 
-
 function lunit.run(testpatterns)
   clearstats()
   if (not getrunner()) then
@@ -611,58 +645,6 @@ function lunit.loadonly()
   report("done")
   return stats
 end
-
-
-
-
-
-
-
-
-
-local lunitpat2luapat
-do 
-  local conv = {
-    ["^"] = "%^",
-    ["$"] = "%$",
-    ["("] = "%(",
-    [")"] = "%)",
-    ["%"] = "%%",
-    ["."] = "%.",
-    ["["] = "%[",
-    ["]"] = "%]",
-    ["+"] = "%+",
-    ["-"] = "%-",
-    ["?"] = ".",
-    ["*"] = ".*"
-  }
-  function lunitpat2luapat(str)
-    --return "^" .. string.gsub(str, "%W", conv) .. "$"
-    -- Above was very annoying, if I want to run all the tests having to do with
-    -- RSS, I want to be able to do "-t rss"   not "-t \*rss\*".
-    return string_gsub(str, "%W", conv)
-  end
-end
-
-
-
-local function in_patternmap(map, name)
-  if map[name] == true then
-    return true
-  else
-    for _, pat in ipairs(map) do
-      if string_find(name, pat) then
-        return true
-      end
-    end
-  end
-  return false
-end
-
-
-
-
-
 
 
 
