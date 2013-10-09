@@ -1,8 +1,8 @@
 package = "lunitx"
 version = "scm.mot.skip-0"
 source = {
-  url = "git://github.com/moteus/lunit.git",
-  branch = "moteus-skip"
+  url = "https://github.com/moteus/lunit/archive/moteus-skip.zip",
+  dir = "lunit-moteus-skip"
 }
 description = {
   summary = "Lunitx is a unit testing framework for lua, written in lua.",
