@@ -70,6 +70,7 @@ local function TEST_CASE(name)
   if not IS_LUA52 then
     module(name, package.seeall, lunit.testcase)
     setfenv(2, _M)
+    return _M
   else
     return lunit.module(name, 'seeall')
   end

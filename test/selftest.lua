@@ -106,6 +106,11 @@ end
 -- the stdlib error() function to signal errors instead of fail().
 local _ENV = TEST_CASE "lunit.selftest.basics"
 
+function test_case_env()
+  assert_not_nil(_ENV)
+  if _M then assert_equal(_M, _ENV) end
+end
+
 function test_fail()
   local ok, errmsg
 
