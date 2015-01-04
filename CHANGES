@@ -1,5 +1,11 @@
 
 
+Release 0.8:
+        Merged in fixes and improvements from Alexey Melnichuk (moteus)
+        - Fix for -t
+        - New skip command
+        Tested compatibility with Lua 5.3, and adjusted rockspec
+
 Release 0.7:
 
         Bug fixes and improvements from moteus (Alexey Melnichuk):

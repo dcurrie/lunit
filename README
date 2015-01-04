@@ -1,5 +1,5 @@
-This is lunitx Version 0.7, an extended version of Lunit
-for Lua 5.2.
+This is lunitx Version 0.8, an extended version of Lunit
+for Lua 5.2 and 5.3.
 
 Lunit is a unit testing framework for lua.
 

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-#   This file is part of lunit 0.7.
+#   This file is part of lunitx.
 #
 #   For Details about lunit look at: http://www.mroth.net/lunit/
 #
@@ -45,8 +45,9 @@ while true ; do
   case "$1" in
     -h|--help)
       cat <<EOT
-lunit 0.7
-Copyright (c) 2004-2009 Michael Roth <mroth@nessie.de>
+lunit 0.8
+Copyright (c) 2004-2010 Michael Roth <mroth@nessie.de>
+Copyright (c) 2011-2015 Doug Currie
 This program comes WITHOUT WARRANTY OF ANY KIND.
 
 Usage: lunit [OPTIONS] [--] scripts
@@ -68,7 +69,7 @@ EOT
       exit ;;
 
     --version)
-      echo "lunit 0.7 Copyright 2004-2009 Michael Roth <mroth@nessie.de>"
+      echo "lunit 0.8 Copyright 2004-2009 Michael Roth <mroth@nessie.de>"
       exit ;;
 
     -i|--interpreter)
