@@ -13,7 +13,7 @@ atexit(function()
         print(emsg)
         os.exit(1)
     end
-    if lunit.stats.failed > 0 then
+    if lunit.stats.failed > 0 or lunit.stats.errors > 0 then
       os.exit(1)
     end
 end)

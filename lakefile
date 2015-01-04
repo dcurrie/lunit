@@ -1,0 +1,42 @@
+J = assert(J or path.join)
+
+PROJECT = 'lunit'
+
+if LUA_VER == '5.3' then
+  LUA_NEED = 'lua53'
+  LUA_DIR  = ENV.LUA_DIR_5_3 or ENV.LUA_DIR
+  LUA_RUNNER = 'lua53'
+elseif LUA_VER == '5.2' then
+  LUA_NEED = 'lua52'
+  LUA_DIR  = ENV.LUA_DIR_5_2 or ENV.LUA_DIR
+  LUA_RUNNER = 'lua52'
+else
+  LUA_NEED = 'lua'
+  LUA_DIR  = ENV.LUA_DIR
+  LUA_RUNNER = 'lua'
+end
+
+ROOT    = ROOT or J(LUA_DIR,'libs',PROJECT)
+LUADIR  = LUADIR or J(ROOT, 'share')
+LIBDIR  = LIBDIR or J(ROOT, 'share')
+TESTDIR = J(ROOT, 'test')
+
+install = target('install', {
+  file.group{odir = LUADIR;  recurse = true; src = J('lua',  '*.*' )};
+  file.group{odir = TESTDIR; recurse = true; src = J('test', '*.*' )};
+})
+
+local function run(file, cwd)
+  print()
+  print("run " .. file)
+  if not TESTING then
+    if cwd then lake.chdir(cwd) end
+    os.execute( LUA_RUNNER .. ' ' .. file )
+    if cwd then lake.chdir("<") end
+    print()
+  end
+end
+
+target('test', install, function()
+  run(J(TESTDIR,'selftest.lua'), TESTDIR)
+end)

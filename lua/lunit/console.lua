@@ -49,28 +49,16 @@
 --]]
 
 
-lunit = require "lunit"
+local lunit  = require "lunit"
+local string = require "string"
+local io     = require "io"
+local table  = require "table"
 
-local lunit_console
-
-if _VERSION >= 'Lua 5.2' then
-
-    lunit_console = setmetatable({},{__index = _ENV})
-    _ENV = lunit_console
-
-else
-
-    module( "lunit-console", package.seeall )
-    lunit_console = _M
-
-end
-
-
+local _M = {}
 
 local function printformat(format, ...)
   io.write( string.format(format, ...) )
 end
-
 
 local columns_printed = 0
 
@@ -87,11 +75,9 @@ local function writestatus(char)
   columns_printed = columns_printed + 1
 end
 
-
 local msgs = {}
 
-
-function begin()
+function _M.begin()
   local total_tc = 0
   local total_tests = 0
 
@@ -107,19 +93,16 @@ function begin()
   printformat("Loaded testsuite with %d tests in %d testcases.\n\n", total_tests, total_tc)
 end
 
-
-function run(testcasename, testname)
+function _M.run(testcasename, testname)
   -- NOP
 end
 
-
-function err(fullname, message, traceback)
+function _M.err(fullname, message, traceback)
   writestatus("E")
   msgs[#msgs+1] = "Error! ("..fullname.."):\n"..message.."\n\t"..table.concat(traceback, "\n\t") .. "\n"
 end
 
-
-function fail(fullname, where, message, usermessage)
+function _M.fail(fullname, where, message, usermessage)
   writestatus("F")
   local text =  "Failure ("..fullname.."):\n"..
                 where..": "..message.."\n"
@@ -131,14 +114,23 @@ function fail(fullname, where, message, usermessage)
   msgs[#msgs+1] = text
 end
 
+function _M.skip(fullname, where, message, usermessage)
+  writestatus("S")
+  local text =  "Skip ("..fullname.."):\n"..
+                where..": "..message.."\n"
 
-function pass(testcasename, testname)
+  if usermessage then
+    text = text .. where..": "..usermessage.."\n"
+  end
+
+  msgs[#msgs+1] = text
+end
+
+function _M.pass(testcasename, testname)
   writestatus(".")
 end
 
-
-
-function done()
+function _M.done()
   printformat("\n\n%d Assertions checked.\n", lunit.stats.assertions )
   print()
 
@@ -146,11 +138,8 @@ function done()
     printformat( "%3d) %s\n", i, msg )
   end
 
-  printformat("Testsuite finished (%d passed, %d failed, %d errors).\n",
-      lunit.stats.passed, lunit.stats.failed, lunit.stats.errors )
+  printformat("Testsuite finished (%d passed, %d failed, %d errors, %d skipped).\n",
+      lunit.stats.passed, lunit.stats.failed, lunit.stats.errors, lunit.stats.skipped )
 end
 
-
-return lunit_console
-
-
+return _M

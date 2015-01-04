@@ -70,6 +70,7 @@ local function TEST_CASE(name)
   if not IS_LUA52 then
     module(name, package.seeall, lunit.testcase)
     setfenv(2, _M)
+    return _M
   else
     return lunit.module(name, 'seeall')
   end
@@ -90,6 +91,7 @@ end
 lunit.TEST_CASE = TEST_CASE
 
 local __failure__ = {}    -- Type tag for failed assertions
+local __skip__    = {}    -- Type tag for skipped tests
 
 local typenames = { "nil", "boolean", "number", "string", "table", "function", "thread", "userdata" }
 
@@ -104,7 +106,7 @@ do
   end
 
   local function my_traceback(errobj)
-    if is_table(errobj) and errobj.type == __failure__ then
+    if is_table(errobj) and ((errobj.type == __failure__) or (errobj.type == __skip__)) then
       local info = debug_getinfo(5, "Sl")   -- FIXME: Hardcoded integers are bad...
       errobj.where = string_format( "%s:%d", info.short_src, info.currentline)
     else
@@ -182,6 +184,18 @@ local function failure(name, usermsg, defaultmsg, ...)
 end
 traceback_hide( failure )
 
+local function _skip(name, usermsg, defaultmsg, ...)
+  if usermsg then usermsg = tostring(usermsg) end
+  local errobj = {
+    type    = __skip__,
+    name    = name,
+    msg     = string_format(defaultmsg,...),
+    usermsg = usermsg
+  }
+  error(errobj, 0)
+end
+traceback_hide( _skip )
+
 
 local function format_arg(arg)
   local argtype = type(arg)
@@ -195,16 +209,54 @@ local function format_arg(arg)
 end
 
 
-local function selected(map, name)
+local selected
+do 
+  local conv = {
+    ["^"] = "%^",
+    ["$"] = "%$",
+    ["("] = "%(",
+    [")"] = "%)",
+    ["%"] = "%%",
+    ["."] = "%.",
+    ["["] = "%[",
+    ["]"] = "%]",
+    ["+"] = "%+",
+    ["-"] = "%-",
+    ["?"] = ".",
+    ["*"] = ".*"
+  }
+
+  local function lunitpat2luapat(str)
+    --return "^" .. string.gsub(str, "%W", conv) .. "$"
+    -- Above was very annoying, if I want to run all the tests having to do with
+    -- RSS, I want to be able to do "-t rss"   not "-t \*rss\*".
+    return string_gsub(str, "%W", conv)
+  end
+
+  local function in_patternmap(map, name)
+    if map[name] == true then
+      return true
+    else
+      for _, pat in ipairs(map) do
+        if string_find(name, pat) then
+          return true
+        end
+      end
+    end
+    return false
+  end
+
+  selected = function (map, name)
     if not map then
-        return true
+      return true
     end
 
     local m = {}
     for k,v in pairs(map) do
-        m[k] = lunitpat2luapat(v)
+      m[k] = lunitpat2luapat(v)
     end
     return in_patternmap(m, name)
+  end
 end
 
 
@@ -213,6 +265,13 @@ function fail(msg)
   failure( "fail", msg, "failure" )
 end
 traceback_hide( fail )
+
+
+function skip(msg)
+  stats.assertions = stats.assertions + 1
+  _skip( "skip", msg, "skip" )
+end
+traceback_hide( skip )
 
 
 function assert(assertion, ...)
@@ -390,6 +449,7 @@ function lunit.clearstats()
     passed      = 0;
     failed      = 0;
     errors      = 0;
+    skipped     = 0;
   }
 end
 
@@ -439,13 +499,15 @@ do
     if errobj.type == __failure__ then
       stats.failed = stats.failed + 1
       report("fail", fullname, errobj.where, errobj.msg, errobj.usermsg)
+    elseif errobj.type == __skip__ then
+      stats.skipped = stats.skipped + 1
+      report("skip", fullname, errobj.where, errobj.msg, errobj.usermsg)
     else
       stats.errors = stats.errors + 1
       report("err", fullname, errobj.msg, errobj.tb)
     end
   end
 end
-
 
 
 local function key_iter(t, k)
@@ -472,6 +534,7 @@ do
     -- Import lunit, fail, assert* and is_* function to the module/testcase
     m.lunit = lunit
     m.fail = lunit.fail
+    m.skip = lunit.skip
     for funcname, func in pairs(lunit) do
       if "assert" == string_sub(funcname, 1, 6) or "is_" == string_sub(funcname, 1, 3) then
         m[funcname] = func
@@ -542,8 +605,6 @@ do
 end
 
 
-
-
 function lunit.runtest(tcname, testname)
   orig_assert( is_string(tcname) )
   orig_assert( is_string(testname) )
@@ -583,7 +644,6 @@ end
 traceback_hide(runtest)
 
 
-
 function lunit.run(testpatterns)
   clearstats()
   if (not getrunner()) then
@@ -611,58 +671,6 @@ function lunit.loadonly()
   report("done")
   return stats
 end
-
-
-
-
-
-
-
-
-
-local lunitpat2luapat
-do 
-  local conv = {
-    ["^"] = "%^",
-    ["$"] = "%$",
-    ["("] = "%(",
-    [")"] = "%)",
-    ["%"] = "%%",
-    ["."] = "%.",
-    ["["] = "%[",
-    ["]"] = "%]",
-    ["+"] = "%+",
-    ["-"] = "%-",
-    ["?"] = ".",
-    ["*"] = ".*"
-  }
-  function lunitpat2luapat(str)
-    --return "^" .. string.gsub(str, "%W", conv) .. "$"
-    -- Above was very annoying, if I want to run all the tests having to do with
-    -- RSS, I want to be able to do "-t rss"   not "-t \*rss\*".
-    return string_gsub(str, "%W", conv)
-  end
-end
-
-
-
-local function in_patternmap(map, name)
-  if map[name] == true then
-    return true
-  else
-    for _, pat in ipairs(map) do
-      if string_find(name, pat) then
-        return true
-      end
-    end
-  end
-  return false
-end
-
-
-
-
-
 
 
 
