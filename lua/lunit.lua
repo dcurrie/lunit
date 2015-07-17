@@ -18,7 +18,7 @@
     and to permit persons to whom the Software is furnished to do so,
     subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be 
+    The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
@@ -76,16 +76,16 @@ local function TEST_CASE(name)
   end
 end
 
-if IS_LUA52 then 
+if IS_LUA52 then
 
     lunit = {}
     _ENV = lunit
-    
+
 else
 
     module("lunit")
     lunit = _M
-    
+
 end
 
 lunit.TEST_CASE = TEST_CASE
@@ -210,7 +210,7 @@ end
 
 
 local selected
-do 
+do
   local conv = {
     ["^"] = "%^",
     ["$"] = "%$",
@@ -541,7 +541,7 @@ do
       end
     end
   end
-  
+
   function lunit.module(name,seeall)
     local m = {}
     if seeall == "seeall" then
@@ -691,6 +691,7 @@ function main(argv)
     if not is_string(filename) then
       return error("lunit.main: invalid argument")
     end
+    if #filename==0 then return end
     local chunk, err = loadfile(filename)
     if err then
       return error(err)
