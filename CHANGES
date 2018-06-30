@@ -1,5 +1,8 @@
 
 
+Release 0.8.1:
+        Tested compatibility with Lua 5.4, and adjusted rockspec
+
 Release 0.8:
         Merged in fixes and improvements from Alexey Melnichuk (moteus)
         - Fix for -t

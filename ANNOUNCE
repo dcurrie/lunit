@@ -1,9 +1,9 @@
 
-                 Lunit Release 0.8
-                ===================
+                 Lunit Release 0.8.1
+                =====================
 
 Lunitx is a unit testing framework for lua, written in lua, 
-based heavily on Lunit 0.5, but modified to work with Lua 5.2 and 5.3
+based heavily on Lunit 0.5, but modified to work with Lua 5.2, 5.3, and 5.4
 
 Lunitx provides 27 assert functions, and a few misc functions
 for usage in an easy unit testing framework.
