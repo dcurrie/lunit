@@ -1,5 +1,8 @@
 
 
+Release 0.8.2:
+        Tested compatibility with Lua 5.5, and adjusted rockspec
+
 Release 0.8.1:
         Tested compatibility with Lua 5.4, and adjusted rockspec
 
